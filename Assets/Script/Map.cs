@@ -4,33 +4,45 @@ using UnityEngine;
 
 public class Map : MonoBehaviour
 {
-    public GameObject floor;
-    public GameObject hWall;
-    public GameObject vWall;
-    public GameObject interWall;
-    public GameObject start;
-    public GameObject rotator;
-    public GameObject robot;
+    public GameObject goFloor;
+    public GameObject goHWall;
+    public GameObject goVWall;
+    public GameObject goLaser1;
+    public GameObject goInterWall;
+    public GameObject goStart;
+    public GameObject goRotator;
+    public GameObject goRobot;
+    public GameObject goController;
+    readonly Color[] colors = new Color[] { Color.red, Color.green, Color.blue };
+
+    int nbRobots = 0;
+
+    void InitRobot(GameObject obj)
+    {
+        var robot = obj.GetComponent<MonoBehaviour>() as Robot;
+        robot.SetColor(colors[nbRobots]);
+        nbRobots++;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         string[] mapData =
         {
-            "#######     #######",
-            "#. . .#o . o#. . .#",
+            "#v#####     #####v#",
+            "#. . .<o . o#. . .<",
             "#     #     #     #",
-            "#. . r . . . r . .#",
+            "#. . r 1 . . r . .#",
             "###             ###",
             " o . . . . . . . o ",
             "                   ",
-            " . . .#. 1 . . . 1 ",
+            " . . .#. 1 . . . . ",
             "                   ",
             " o . . . . . . . o ",
-            "###             ###",
-            "#. . r . . . r . .#",
+            "#v#             #v#",
+            "#. . r . . . r 1 .#",
             "#     #     #     #",
-            "#. . .#o 1 o#. . .#",
+            "#. . .<o . o#. . .<",
             "#######     #######",
         };
 
@@ -41,16 +53,17 @@ public class Map : MonoBehaviour
             {
                 if (mapData[y][x] != 'o')
                 {
-                    Instantiate(floor, new Vector3(x / 2, -0.5f, y / 2), Quaternion.identity);
+                    Instantiate(goFloor, new Vector3(x / 2, -0.5f, y / 2), Quaternion.identity, this.transform);
                 }
                 if (mapData[y][x] == '1')
                 {
-                    Instantiate(start, new Vector3(x / 2, 0f, y / 2), Quaternion.identity);
-                    Instantiate(robot, new Vector3(x / 2, 3f, y / 2), Quaternion.identity);
+                    Instantiate(goStart, new Vector3(x / 2, 0f, y / 2), Quaternion.identity, this.transform);
+                    var rb = Instantiate(goRobot, new Vector3(x / 2, 3f, y / 2), Quaternion.identity, this.transform);
+                    InitRobot(rb);
                 }
                 if (mapData[y][x] == 'r')
                 {
-                    Instantiate(rotator, new Vector3(x / 2, 0f, y / 2), Quaternion.identity);
+                    Instantiate(goRotator, new Vector3(x / 2, 0f, y / 2), Quaternion.identity, this.transform);
                 }
             }
         }
@@ -60,9 +73,18 @@ public class Map : MonoBehaviour
         {
             for (int x = 0; x < mapData[y].Length; x += 2)
             {
-                if (mapData[y][x] == '#')
+                if (mapData[y][x] != ' ')
                 {
-                    Instantiate(hWall, new Vector3(x / 2 - 0.5f, 0f, y / 2), Quaternion.identity);
+                    Instantiate(goHWall, new Vector3(x / 2 - 0.5f, 0f, y / 2), Quaternion.identity, this.transform);
+                }
+                if (mapData[y][x] == '<')
+                {
+                    var laser = Instantiate(goLaser1, new Vector3(x / 2 - 0.5f, 0f, y / 2), Quaternion.identity, this.transform);
+                    var tr = laser.GetComponent<Transform>();
+                    var v = tr.rotation.eulerAngles;
+                    v.y = 90f;
+                    tr.rotation = Quaternion.Euler(v);
+                    tr.localScale = new Vector3(tr.localScale.x, tr.localScale.y, 3f);
                 }
             }
         }
@@ -72,9 +94,18 @@ public class Map : MonoBehaviour
         {
             for (int x = 1; x < mapData[y].Length; x += 2)
             {
-                if (mapData[y][x] == '#')
+                if (mapData[y][x] != ' ')
                 {
-                    Instantiate(vWall, new Vector3(x / 2, 0f, y / 2 - 0.5f), Quaternion.identity);
+                    Instantiate(goVWall, new Vector3(x / 2, 0f, y / 2 - 0.5f), Quaternion.identity, this.transform);
+                }
+                if (mapData[y][x] == 'v')
+                {
+                    var laser = Instantiate(goLaser1, new Vector3(x / 2, 0f, y / 2 - 0.5f), Quaternion.identity, this.transform);
+                    var tr = laser.GetComponent<Transform>();
+                    var v = tr.rotation.eulerAngles;
+                    v.y = 180f;
+                    tr.rotation = Quaternion.Euler(v);
+                    tr.localScale = new Vector3(tr.localScale.x, tr.localScale.y, 2f);
                 }
             }
         }
@@ -86,7 +117,7 @@ public class Map : MonoBehaviour
             {
                 if (mapData[y][x] == '#')
                 {
-                    Instantiate(interWall, new Vector3(x / 2 - 0.5f, 0f, y / 2 - 0.5f), Quaternion.identity);
+                    Instantiate(goInterWall, new Vector3(x / 2 - 0.5f, 0f, y / 2 - 0.5f), Quaternion.identity, this.transform);
                 }
             }
         }
