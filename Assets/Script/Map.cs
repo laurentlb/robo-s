@@ -13,21 +13,10 @@ public class Map : MonoBehaviour
     public GameObject goRotator;
     public GameObject goRobot;
     public GameObject goController;
+    public Controller controller;
     readonly Color[] colors = new Color[] { Color.red, Color.green, Color.blue };
 
-    int nbRobots = 0;
-
-    void InitRobot(GameObject obj)
-    {
-        var robot = obj.GetComponent<MonoBehaviour>() as Robot;
-        robot.SetColor(colors[nbRobots]);
-        nbRobots++;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        string[] mapData =
+    readonly string[] mapData =
         {
             "#v#####     #####v#",
             "#. . .<o . o#. . .<",
@@ -46,6 +35,23 @@ public class Map : MonoBehaviour
             "#######     #######",
         };
 
+    int nbRobots = 0;
+
+    void InitRobot(GameObject obj)
+    {
+        var robot = obj.GetComponent<MonoBehaviour>() as Robot;
+        robot.SetColor(colors[nbRobots]);
+        if (nbRobots == 0)
+        {
+            controller = goController.GetComponent<MonoBehaviour>() as Controller;
+            controller.Init(robot);
+        }
+        nbRobots++;
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
         // Objects
         for (int y = 1; y < mapData.Length; y += 2)
         {
