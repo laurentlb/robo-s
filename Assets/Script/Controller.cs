@@ -55,10 +55,10 @@ public class Controller : MonoBehaviour
     {
         var tr = robot.gameObject.transform;
         targetPosition.y = tr.position.y;
-        if (Vector3.Distance(tr.position, targetPosition) < 0.2f)
-        {
-            return;
-        }
+        //if (Vector3.Distance(tr.position, targetPosition) < 0.2f)
+        //{
+        //    return;
+        //}
         targetPosition.y += 0.05f;
         // var moved = Vector2.MoveTowards(new Vector2(tr.position.x, tr.position.z), new Vector2(targetPosition.x, targetPosition.z), speed);
         // tr.position = Vector3.MoveTowards(tr.position, targetPosition, speed);
@@ -66,7 +66,7 @@ public class Controller : MonoBehaviour
 
         var dir = Vector3.ClampMagnitude(targetPosition - tr.position, speed);
 
-        body.MovePosition(tr.position + dir * Time.deltaTime * speed);
+        body.MovePosition(tr.position + speed * Time.deltaTime * dir);
 
         // Vector3.
         // body.MovePosition(Vector3.MoveTowards(tr.position, targetPosition, speed));

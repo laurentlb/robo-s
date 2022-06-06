@@ -13,8 +13,11 @@ public class Map : MonoBehaviour
     public GameObject goRotator;
     public GameObject goRobot;
     public GameObject goController;
-    public Controller controller;
-    readonly Color[] colors = new Color[] { Color.red, Color.green, Color.blue };
+
+    public Board board;
+
+    private Controller controller;
+    readonly Color[] colors = new Color[] { Color.red, Color.green, Color.blue, Color.yellow, Color.black, Color.magenta };
 
     readonly string[] mapData =
         {
@@ -52,6 +55,17 @@ public class Map : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        board.Init();
+
+        List<Board.Robot> robots = board.GetRobots();
+
+        foreach (var robot in robots)
+        {
+            var rb = Instantiate(goRobot, new Vector3(robot.pos.x, 3f, robot.pos.y), Quaternion.identity, this.transform);
+            InitRobot(rb);
+        }
+
+
         // Objects
         for (int y = 1; y < mapData.Length; y += 2)
         {
@@ -64,8 +78,8 @@ public class Map : MonoBehaviour
                 if (mapData[y][x] == '1')
                 {
                     Instantiate(goStart, new Vector3(x / 2, 0f, y / 2), Quaternion.identity, this.transform);
-                    var rb = Instantiate(goRobot, new Vector3(x / 2, 3f, y / 2), Quaternion.identity, this.transform);
-                    InitRobot(rb);
+                    // var rb = Instantiate(goRobot, new Vector3(x / 2, 3f, y / 2), Quaternion.identity, this.transform);
+                    // InitRobot(rb);
                 }
                 if (mapData[y][x] == 'r')
                 {
